@@ -1,0 +1,11 @@
+{
+    "checked_at": "2026-11-02T19:48:52+00:00",
+    "order_id": 2,
+    "database_status": "paid",
+    "amount_cents": 2400,
+    "stripe_session_id": "cs_test_a12tS26AOo0gsDMPh3UaHBqjTK3Ikb4CwMaIktradgRRQNqhfS3G2REMMd",
+    "stripe_payment_status": "paid",
+    "livemode": false,
+    "currency": "usd",
+    "note": "Pago completado desde el navegador en Checkout oficial de Stripe y confirmado mediante webhook firmado. Sin cobro real."
+}

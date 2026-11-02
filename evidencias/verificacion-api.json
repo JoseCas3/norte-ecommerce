@@ -1,0 +1,63 @@
+{
+  "timestamp": "2026-11-02T19:39:08.395Z",
+  "base": "http://127.0.0.1:8000/api",
+  "checks": [
+    {
+      "name": "Catálogo público desde Laravel",
+      "result": "PASS"
+    },
+    {
+      "name": "Detalle de producto",
+      "result": "PASS"
+    },
+    {
+      "name": "Órdenes protegidas",
+      "result": "PASS"
+    },
+    {
+      "name": "Registro real con Sanctum",
+      "result": "PASS"
+    },
+    {
+      "name": "Login real",
+      "result": "PASS"
+    },
+    {
+      "name": "Orden recalcula precio desde BD",
+      "result": "PASS"
+    },
+    {
+      "name": "Reintento idempotente conserva orden",
+      "result": "PASS"
+    },
+    {
+      "name": "Clave reutilizada con otro carrito devuelve conflicto",
+      "result": "PASS"
+    },
+    {
+      "name": "Cantidades fuera de límite rechazadas",
+      "result": "PASS"
+    },
+    {
+      "name": "Historial contiene la orden",
+      "result": "PASS"
+    },
+    {
+      "name": "Orden propia accesible",
+      "result": "PASS"
+    },
+    {
+      "name": "Aislamiento entre usuarios",
+      "result": "PASS"
+    },
+    {
+      "name": "Logout revoca token",
+      "result": "PASS"
+    },
+    {
+      "name": "Token revocado rechazado",
+      "result": "PASS"
+    }
+  ],
+  "nota": "Pruebas reales de API. No incluye evidencia de pago en Stripe."
+}

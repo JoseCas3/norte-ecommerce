@@ -1,0 +1,1 @@
+Los scripts se ejecutan desde la raíz del repositorio. setup.ps1 configura Laravel; start-api.ps1 inicia la API. smoke-api.mjs hace peticiones reales y crea cuentas QA con correos example.com. lighthouse.mjs audita la versión de producción y guarda HTML y JSON. No se registran contraseñas ni tokens en los reportes.

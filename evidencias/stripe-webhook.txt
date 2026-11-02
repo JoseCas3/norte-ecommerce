@@ -1,0 +1,2 @@
+2026-11-02 13:47:59   --> checkout.session.completed [evt_1UXRCzAJPFvPtzJRQ9wL5dek]
+2026-11-02 13:47:59  <--  [200] POST http://127.0.0.1:8000/api/stripe/webhook [evt_1UXRCzAJPFvPtzJRQ9wL5dek]

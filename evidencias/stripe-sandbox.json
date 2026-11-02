@@ -1,0 +1,7 @@
+{
+  "account_id": "acct_1UXQk6AJPFvPtzJR",
+  "expires_at": "2026-11-09",
+  "provider": "Stripe",
+  "mode": "test",
+  "note": "Sandbox oficial temporal. Sin claves ni enlaces privados en este archivo."
+}

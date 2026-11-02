@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env*
+!.env.example
+*.tsbuildinfo
+backend/vendor/
+backend/storage/*
+!backend/storage/.gitkeep
+backend/database/*.sqlite*
+.tools/
+
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+backend/.phpunit.result.cache
