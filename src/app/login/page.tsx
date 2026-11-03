@@ -9,25 +9,21 @@ export default async function Login({
   return (
     <section className="auth-layout">
       <div className="auth-story">
-        <p className="eyebrow">TU ESPACIO NORTE</p>
-        <h1>
-          Qué bueno
-          <br />
-          verte de nuevo<span>.</span>
-        </h1>
-        <p>Tus favoritos, tus pedidos y todo lo que va contigo.</p>
-        <span className="auth-mark" aria-hidden="true">
-          N↗
+        <span className="auth-symbol" aria-hidden="true">
+          ↗
         </span>
+        <p className="eyebrow">TU CUENTA NORTE</p>
+        <h1>Vuelve a tu ritmo.</h1>
+        <p>Entra para seguir con tu compra y consultar tus pedidos.</p>
       </div>
       <div className="auth-box">
-        <span className="eyebrow">CONTINÚA DONDE LO DEJASTE</span>
         <h2>Inicia sesión</h2>
         {expired && (
           <p className="notice">Tu sesión expiró. Inicia sesión de nuevo.</p>
         )}
         <AuthForm kind="login" />
       </div>
+      <p className="auth-footnote">Tu próxima buena elección empieza aquí.</p>
     </section>
   );
 }

@@ -8,6 +8,7 @@ import {
   useCallback,
 } from "react";
 import Link from "next/link";
+import { ProductArtwork } from "./product-artwork";
 import { pay } from "@/app/actions";
 import { money, type Product, type CartItem } from "@/lib/types";
 type CartContext = {
@@ -138,8 +139,8 @@ export function Checkout({ authenticated }: { authenticated: boolean }) {
       <section aria-label="Productos del carrito">
         {items.map(({ product: p, quantity }) => (
           <article className="cart-row" key={p.id}>
-            <div className="cart-art" style={{ background: p.color }}>
-              {p.icon}
+            <div className="cart-art">
+              <ProductArtwork icon={p.icon} />
             </div>
             <div>
               <span className="eyebrow">{p.category}</span>

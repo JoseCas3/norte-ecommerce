@@ -7,11 +7,11 @@ import { logout } from "./actions";
 import "./globals.css";
 export const metadata: Metadata = {
   title: {
-    default: "NORTE — Objetos para tu día a día",
+    default: "NORTE — Daily gear",
     template: "%s | NORTE",
   },
   description:
-    "Una selección de objetos útiles, diseño esencial y compras seguras.",
+    "Dale otra energía a tu rutina. Accesorios, escritorio y bienestar con compra segura.",
 };
 export default async function Layout({
   children,
@@ -27,12 +27,12 @@ export default async function Layout({
             Saltar al contenido
           </a>
           <div className="topbar">
-            Menos cosas. Mejores elecciones.{" "}
-            <span>Envío gratis en todos los pedidos ↗</span>
+            DAILY GEAR / EXTRAORDINARY DAYS{" "}
+            <span>ENVÍO INCLUIDO EN CADA PEDIDO ↗</span>
           </div>
           <header>
             <Link className="brand" href="/">
-              NORTE<span>®</span>
+              NORTE<span>DAILY GEAR</span>
             </Link>
             <nav aria-label="Navegación principal">
               <Link href="/catalogo">Colección</Link>
@@ -53,16 +53,16 @@ export default async function Layout({
           <footer>
             <div>
               <Link href="/" className="brand">
-                NORTE<span>®</span>
+                NORTE<span>DAILY GEAR</span>
               </Link>
-              <p>Lo esencial, bien elegido.</p>
+              <p>Fuera de lo ordinario.</p>
             </div>
             <p>
-              Diseño cotidiano. Compra segura.
+              Tu rutina. Tu ritmo. Tu NORTE.
               <br />
-              <small>Next.js · Laravel · Stripe</small>
+              <small>Diseño + funcionalidad</small>
             </p>
-            <Link href="/catalogo">Explorar la colección ↗</Link>
+            <Link href="/catalogo">Volver al catálogo ↗</Link>
           </footer>
           <Vitals />
         </CartProvider>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProductArtwork } from "./product-artwork";
 import { api } from "@/lib/api";
 import { money, type Product } from "@/lib/types";
 import { AddToCart } from "./cart";
@@ -29,16 +30,13 @@ export async function Products({
         <article className="product-card" key={p.id}>
           <Link
             href={`/catalogo/${p.id}`}
-            aria-label={`Ver ${p.name}`}
+            aria-label={`${index === 0 ? "Destacado" : p.category}: Ver ${p.name} ↗`}
             className="product-art"
-            style={{ background: p.color }}
           >
             <span aria-hidden="true" className="product-label">
-              {index === 0 ? "SELECCIÓN NORTE" : p.category}
+              {index === 0 ? "DESTACADO" : p.category}
             </span>
-            <span className="product-symbol" aria-hidden="true">
-              {p.icon}
-            </span>
+            <ProductArtwork icon={p.icon} />
             <span aria-hidden="true" className="product-arrow">
               ↗
             </span>

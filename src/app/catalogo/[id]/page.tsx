@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProductArtwork } from "@/components/product-artwork";
 import { notFound } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { money, type Product } from "@/lib/types";
@@ -23,12 +24,8 @@ export default async function Detail({
         ← Volver a la colección
       </Link>
       <div className="detail">
-        <div
-          className="detail-art"
-          style={{ background: p.color }}
-          aria-hidden="true"
-        >
-          {p.icon}
+        <div className="detail-art" aria-hidden="true">
+          <ProductArtwork icon={p.icon} />
         </div>
         <div>
           <span className="eyebrow">{p.category} / NORTE ORIGINAL</span>

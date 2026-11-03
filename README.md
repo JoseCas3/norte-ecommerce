@@ -104,6 +104,10 @@ Stripe procesa el pago en su infraestructura de pruebas; no se mueve dinero. La 
 
 Referencias oficiales: [pruebas de Stripe](https://docs.stripe.com/testing), [confirmación de pagos](https://docs.stripe.com/checkout/fulfillment), [sandbox temporal](https://docs.stripe.com/cli/sandbox).
 
+## Identidad visual
+
+NORTE Daily Gear usa fondo azul medianoche, acentos azul eléctrico y rosa, tipografía sans serif y tarjetas de producto con ilustraciones SVG locales. El catálogo organiza las categorías en una barra lateral de escritorio y chips en pantallas pequeñas. El acceso usa una tarjeta central; carrito e historial mantienen el mismo sistema visual.
+
 ## Rutas implementadas
 
 | Ruta                   | Acceso                     | Función                                      |
@@ -197,7 +201,7 @@ $env:CHROME_PATH = 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe
 pnpm lighthouse
 ```
 
-Reporte móvil local del catálogo: **97 rendimiento / 100 accesibilidad / 100 buenas prácticas / 100 SEO**. LCP **0,9 s**, CLS **0**, TBT **190 ms**. Los resultados dependen del dispositivo y de las condiciones de ejecución.
+Reporte móvil local del catálogo: **98 rendimiento / 100 accesibilidad / 100 buenas prácticas / 100 SEO**. LCP **2,1 s**, CLS **0**, TBT **130 ms**. Los resultados dependen del dispositivo y de las condiciones de ejecución.
 
 Los archivos están en [evidencias/](evidencias/): capturas del flujo, Swagger, reporte HTML/JSON y verificación del pago contrastada con la API de Stripe. Consulta el [índice de evidencias](evidencias/README.md).
 
