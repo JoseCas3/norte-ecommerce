@@ -1,0 +1,8 @@
+vendor
+.env*
+.git
+storage
+bootstrap/cache
+database/*.sqlite*
+tests
+*.log

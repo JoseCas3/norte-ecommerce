@@ -1,0 +1,90 @@
+name: norte
+x-backend: &backend
+  image: norte-api:local
+  build:
+    context: ./backend
+    target: runtime
+  environment:
+    APP_ENV: production
+    APP_DEBUG: "false"
+    APP_KEY: ${APP_KEY:?Configura APP_KEY en .env}
+    APP_URL: ${API_URL:-http://localhost:8000}
+    FRONTEND_URL: ${SITE_URL:-http://localhost:3000}
+    DB_CONNECTION: mysql
+    DB_HOST: mysql
+    DB_PORT: 3306
+    DB_DATABASE: ${MYSQL_DATABASE:-norte}
+    DB_USERNAME: ${MYSQL_USER:-norte}
+    DB_PASSWORD: ${MYSQL_PASSWORD:?Configura MYSQL_PASSWORD en .env}
+    STRIPE_SECRET: ${STRIPE_SECRET:-}
+    STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+  networks: [data, app]
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Configura MYSQL_ROOT_PASSWORD en .env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-norte}
+      MYSQL_USER: ${MYSQL_USER:-norte}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Configura MYSQL_PASSWORD en .env}
+    volumes: [mysql-data:/var/lib/mysql]
+    networks: [data]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql --protocol=TCP -h 127.0.0.1 -u "$$MYSQL_USER" "$$MYSQL_DATABASE" -e "SELECT 1"']
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+  migrate:
+    <<: *backend
+    command: [php, artisan, migrate, --force]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+  backend:
+    <<: *backend
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+  api:
+    image: norte-nginx:local
+    build:
+      context: ./backend
+      target: web
+    ports: ["${API_PORT:-8000}:80"]
+    networks: [app]
+    depends_on: [backend]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1/up]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+  frontend:
+    image: norte-frontend:local
+    build: .
+    environment:
+      BASE_URL: http://api/api
+      SITE_URL: ${SITE_URL:-http://localhost:3000}
+    ports: ["${FRONTEND_PORT:-3000}:3000"]
+    networks: [app]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/api/session').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+volumes:
+  mysql-data:
+networks:
+  app:
+  data:
+    internal: true

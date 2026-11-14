@@ -1,0 +1,6 @@
+NAME               IMAGE                  COMMAND                  SERVICE    CREATED          STATUS                      PORTS
+norte-api-1        norte-nginx:local      "/docker-entrypoint.…"   api        42 seconds ago   Up 33 seconds (healthy)     0.0.0.0:8000->80/tcp, [::]:8000->80/tcp
+norte-backend-1    norte-api:local        "norte-entrypoint ph…"   backend    43 seconds ago   Up 34 seconds               9000/tcp
+norte-frontend-1   norte-frontend:local   "docker-entrypoint.s…"   frontend   42 seconds ago   Up 27 seconds (healthy)     0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+norte-migrate-1    norte-api:local        "norte-entrypoint ph…"   migrate    43 seconds ago   Exited (0) 34 seconds ago
+norte-mysql-1      mysql:8.0              "docker-entrypoint.s…"   mysql      44 seconds ago   Up 41 seconds (healthy)     3306/tcp, 33060/tcp

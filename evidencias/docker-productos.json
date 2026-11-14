@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Botella Esencial",
+      "description": "Acero inoxidable. Tu bebida a la temperatura ideal, vayas donde vayas.",
+      "category": "Bienestar",
+      "price": 2400,
+      "stock": 99,
+      "color": "#e1e7d8",
+      "icon": "🍶",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:37:04Z"
+    },
+    {
+      "id": 2,
+      "name": "Cuaderno de Ideas",
+      "description": "Papel de 120 g, cubierta flexible y espacio para lo que viene.",
+      "category": "Escritorio",
+      "price": 1600,
+      "stock": 100,
+      "color": "#eee0d2",
+      "icon": "📔",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:35:37Z"
+    },
+    {
+      "id": 3,
+      "name": "Bolso Cotidiano",
+      "description": "Algodón resistente y espacio para tus esenciales de cada día.",
+      "category": "Accesorios",
+      "price": 3200,
+      "stock": 100,
+      "color": "#e5e1d6",
+      "icon": "👜",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:35:37Z"
+    },
+    {
+      "id": 4,
+      "name": "Audífonos Studio",
+      "description": "Sonido envolvente, diseño ligero y hasta 30 horas de autonomía.",
+      "category": "Accesorios",
+      "price": 6900,
+      "stock": 100,
+      "color": "#dae0e4",
+      "icon": "🎧",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:35:37Z"
+    },
+    {
+      "id": 5,
+      "name": "Taza de Pausa",
+      "description": "Cerámica esmaltada para disfrutar cada pequeño descanso.",
+      "category": "Bienestar",
+      "price": 1800,
+      "stock": 100,
+      "color": "#e7d9ce",
+      "icon": "☕",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:35:37Z"
+    },
+    {
+      "id": 6,
+      "name": "Lámpara de Mesa",
+      "description": "Luz cálida regulable. Un punto de calma en tu escritorio.",
+      "category": "Escritorio",
+      "price": 4800,
+      "stock": 100,
+      "color": "#e2e5ce",
+      "icon": "💡",
+      "created_at": "2026-11-14T01:35:37Z",
+      "updated_at": "2026-11-14T01:35:37Z"
+    }
+  ]
+}

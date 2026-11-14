@@ -1,0 +1,14 @@
+**/node_modules
+**/.next
+**/vendor
+**/.env*
+**/.git
+**/.tools
+**/*.sqlite*
+**/*.log
+**/*.tsbuildinfo
+backend
+evidencias
+tests
+scripts
+.github

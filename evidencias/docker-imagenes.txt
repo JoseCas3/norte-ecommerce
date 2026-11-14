@@ -1,0 +1,4 @@
+[norte-frontend:local] 707557371
+[norte-api:local] 189819194
+[norte-nginx:local] 92725604
+[mysql:8.0] 1085694697

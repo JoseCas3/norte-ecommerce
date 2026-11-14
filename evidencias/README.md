@@ -1,5 +1,9 @@
 # Evidencias de la actividad
 
+Para el laboratorio de imágenes Docker multi-stage con MySQL, consulta el [informe del 13 de noviembre de 2026](docker-verificacion.md). Las capturas y mediciones de Docker llevan el prefijo `docker-`. `verificacion-api.json` contiene la ejecución más reciente de las 14 comprobaciones contra MySQL.
+
+## Evidencias previas del e-commerce
+
 Fecha de verificación: 2 de noviembre de 2026. Entorno local, Next.js en producción y Laravel 12 con SQLite.
 
 | Archivo                  | Evidencia                                           |

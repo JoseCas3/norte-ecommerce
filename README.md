@@ -1,3 +1,119 @@
+# Laboratorio: imágenes eficientes con Docker
+
+NORTE reutiliza el frontend Next.js 16 App Router y la API Laravel 12 del bootcamp. Esta entrega agrega imágenes multi-stage y MySQL 8.0. El README conserva las instrucciones de la actividad anterior para ejecución local con SQLite.
+
+## Arquitectura
+
+```mermaid
+flowchart LR
+    Navegador -->|3000| frontend[Next.js: next start]
+    frontend -->|HTTP API en red app| api[Nginx:80]
+    ClienteAPI -->|8000| api
+    api -->|FastCGI 9000| backend[Laravel PHP-FPM]
+    backend -->|red data:3306| mysql[MySQL 8.0]
+    mysql --> volumen[(mysql-data)]
+```
+
+Cuatro contenedores permanentes representan tres servicios funcionales: frontend, API (Nginx + FPM) y base de datos. Un quinto contenedor temporal, `migrate`, aplica migraciones antes de iniciar la API. MySQL no publica puertos y pertenece a una red interna; PHP conserva salida a internet por la red app para Stripe. Las peticiones del navegador pasan por Server Actions y Server Components de Next.js; `BASE_URL=http://api/api` se resuelve dentro de Docker.
+
+## Preparación y ejecución
+
+Requiere Docker Desktop iniciado con contenedores Linux y Docker Compose moderno. No hace falta instalar PHP, Node ni Composer en el host.
+
+1. Copiar `.env.example` a `.env` (PowerShell: `Copy-Item .env.example .env`; Linux/macOS: `cp .env.example .env`).
+2. Completar `MYSQL_ROOT_PASSWORD` y `MYSQL_PASSWORD` con contraseñas distintas. Para valores con `$`, usar comillas simples en el archivo `.env`.
+3. Generar una clave una sola vez:
+
+```sh
+docker compose build backend
+docker compose run --rm --no-deps --entrypoint php -e APP_KEY= backend artisan key:generate --show
+```
+
+Durante la generación Compose exige un valor provisional no vacío de `APP_KEY` en `.env`, por ejemplo `temporal`. Reemplazarlo después por la salida `base64:...` del comando. No cambiar esta clave al reiniciar ni compartir `.env`.
+
+4. Levantar el ecosistema:
+
+```sh
+docker compose up --build -d
+docker compose exec backend php artisan db:seed --force
+docker compose ps -a
+```
+
+Las migraciones son automáticas; el seeder del catálogo se ejecuta explícitamente una vez. Usa `firstOrCreate`, por lo que puede repetirse sin duplicar productos existentes. Los siguientes arranques usan `docker compose up -d`.
+
+- Tienda: http://localhost:3000
+- API: http://localhost:8000/api/products
+- Salud Laravel: http://localhost:8000/up
+- Swagger: http://localhost:8000/docs
+
+El catálogo y el registro funcionan sin Stripe. Los pagos necesitan claves de prueba en `STRIPE_SECRET` y `STRIPE_WEBHOOK_SECRET`, y el reenvío del webhook explicado en README. Los cambios de entorno requieren `docker compose up -d --force-recreate`. Para un dominio público, configurar `SITE_URL`, `API_URL` y HTTPS mediante un proxy de entrada. Las cookies de producción son Secure; para pruebas locales usar `localhost` en el navegador, no una IP de la LAN.
+
+## Decisiones de las imágenes
+
+### Frontend
+
+`dependencies` instala con pnpm 11.25.0 y lockfile congelado; el manifiesto se copia antes del código para reutilizar la capa. La caché BuildKit guarda las descargas. `build` ejecuta `next build --webpack`. `production-dependencies` elimina dependencias de desarrollo con `CI=true pnpm prune --prod` para funcionar sin confirmaciones interactivas en Docker. `runtime` copia `.next`, `public`, configuración JavaScript y dependencias de producción; ejecuta `next start` con el usuario `node` y expone 3000. La configuración usa `.mjs` para evitar instalar TypeScript en ejecución. No se usa standalone porque la consigna solicita `next start`. Se conserva la caché de Next escribible para ISR.
+
+Se utiliza Node 24 Alpine, compatible con el proyecto y superior al mínimo requerido; Node 20 de la consigna es una recomendación. `.dockerignore` excluye secretos, módulos locales, backend, evidencias y artefactos.
+
+### Backend
+
+`php-base` usa PHP 8.4 FPM Alpine porque `composer.json` exige `^8.4` (cumple 8.2+). Compila `pdo_mysql`, `mbstring` y `xml`; elimina compiladores en la misma capa y mantiene bibliotecas de ejecución. OpenSSL, tokenizer, ctype y JSON están incluidos en PHP de la imagen oficial. La etapa `dependencies` instala Composer con `--no-dev`, sin scripts que dependan del código ausente, y genera un autoloader optimizado después de copiar las clases.
+
+Del constructor se copia únicamente `vendor/` al runtime, además del código de la aplicación copiado desde el contexto. Composer y sus cachés no llegan a producción. Laravel necesita también `app`, `bootstrap`, `config`, `database`, `public`, `routes` y `artisan`: copiar únicamente vendor como contenido total impediría ejecutar la API. Se ejecuta como `www-data`; solo storage y bootstrap/cache son escribibles. El entrypoint descubre paquetes y genera la caché de configuración con variables de ejecución, sin incluir secretos en las capas.
+
+El target `web` usa Nginx y copia exclusivamente archivos públicos. Solo `index.php` se envía a PHP-FPM; el puerto 9000 no se publica. Nginx inicia su proceso maestro con el comportamiento estándar de la imagen oficial y sus workers atienden las peticiones.
+
+### MySQL
+
+Se utiliza directamente `mysql:8.0`: no se fabrica un Dockerfile sin cambios útiles. El volumen nombrado persiste `/var/lib/mysql`; Laravel utiliza una cuenta limitada a su base. La comprobación de salud ejecuta SQL con esa cuenta antes de permitir las migraciones. Las contraseñas de inicialización solo se aplican al crear un volumen vacío: cambiarlas en `.env` no actualiza usuarios existentes.
+
+Los lockfiles fijan dependencias de aplicación. Las etiquetas base reciben actualizaciones y no son inmutables: para reproducibilidad binaria estricta, fijar sus digest SHA256 tras construir y verificar en el entorno de entrega.
+
+## Verificación y evidencia para entregar
+
+```sh
+docker compose config --quiet
+docker compose up --build -d
+docker compose exec backend php artisan db:seed --force
+docker compose ps -a
+curl http://localhost:8000/up
+curl http://localhost:8000/api/products
+curl http://localhost:3000/api/session
+docker compose exec backend php -m
+docker compose exec backend php artisan migrate:status
+docker compose exec backend php artisan db:show
+docker image ls norte-frontend norte-api norte-nginx
+docker compose logs --tail=50
+```
+
+Usar `curl.exe` en PowerShell si `curl` es un alias. Comprobar registro/login desde la tienda y repetir después de `docker compose down` y `docker compose up -d` para verificar persistencia. `migrate` debe terminar con código 0; los demás servicios deben seguir activos. En `php -m` verificar las siete extensiones solicitadas; MySQL no debe mostrar un puerto del host en `ps`.
+
+Para medir caché, ejecutar dos veces `docker compose build --progress plain` y registrar duración y pasos `CACHED`. Modificar solo código debe reutilizar la instalación de dependencias. Para comparar tamaño con una imagen anterior usar `docker image inspect IMAGEN --format '{{.Size}}'` y `docker history IMAGEN`; no inventar porcentajes sin medir ambas imágenes. Guardar capturas de los comandos, la tienda y las respuestas de API como evidencia del laboratorio.
+
+Detener con `docker compose down` conserva los datos. `docker compose down -v` elimina permanentemente la base; usarlo únicamente si se desea reiniciar el laboratorio.
+
+## Validación realizada en esta preparación
+
+El 8 de noviembre de 2026 pasaron `docker compose config --quiet` (con variables provisionales de validación), `pnpm test` (3 pruebas), `pnpm typecheck`, `pnpm build` y PHPUnit (4 pruebas, 6 aserciones). También pasó la revisión de sintaxis PHP de la configuración de base de datos. Las pruebas PHP existentes utilizan SQLite en memoria; no sustituyen una prueba de integración con MySQL.
+
+El 13 de noviembre de 2026 se construyeron y ejecutaron las imágenes con Docker Desktop. Pasaron las migraciones en MySQL, las siete extensiones PHP solicitadas, las 14 comprobaciones HTTP de la API y el registro desde el navegador. Después de `docker compose down` y `docker compose up -d` se conservaron seis productos, tres usuarios, una orden y la sesión del navegador. La reconstrucción sin cambios tardó 10,41 segundos y registró 35 pasos CACHED. Tamaños locales reportados por Docker: frontend 707.557.371 bytes, Laravel 189.819.194 bytes, Nginx 92.725.604 bytes y MySQL 1.085.694.697 bytes. Estos valores no representan tamaños comprimidos de descarga. Consulta [el informe y las capturas](evidencias/docker-verificacion.md). Los pagos de Stripe quedan fuera de esta verificación de Docker.
+
+## Publicación
+
+Repositorio público para entregar: [JoseCas3/norte-ecommerce](https://github.com/JoseCas3/norte-ecommerce). Incluye el frontend, la API Laravel, Dockerfiles, Compose, ejemplos de entorno y documentación. Las claves locales se excluyen del repositorio.
+
+## Referencias
+
+- [Builds multi-stage de Docker](https://docs.docker.com/build/building/multi-stage/)
+- [Optimización de caché](https://docs.docker.com/build/cache/optimize/)
+- [Despliegue Next.js](https://nextjs.org/docs/app/getting-started/deploying)
+- [Imagen oficial PHP](https://hub.docker.com/_/php)
+- [Imagen oficial MySQL](https://hub.docker.com/_/mysql)
+
+
+---
+
 # NORTE — E-commerce con Next.js 16 y Laravel 12
 
 Actividad evaluada: **Optimización avanzada de rendimiento, Web Vitals y mutaciones asíncronas en el servidor**.
